@@ -1,0 +1,52 @@
+.d-inline a,
+.d-inline span{
+    text-decoration: none;
+    color: #9ca3af;
+}
+
+.d-inline a:hover {
+    color: #1a202c;
+}
+
+.col-label-form {
+    color: #4a5568;
+}
+
+.card-header {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.card-header.title {
+    font-weight: normal;
+    font-size: 1.5em;
+}
+
+.image-preview {
+    width: 130px;
+    height: 130px;
+    border-radius: 10%;
+}
+
+body {
+    background-color: rgba(0,0,0,.03);;
+}
+
+.width-100 {
+    width: 100%;
+}
+
+.nav-link:hover {
+    background-color: #dddde3;
+}
+
+.setting-option a {
+    text-decoration: none;
+    color: black;
+}
+
+.setting-option a:hover {
+    text-decoration: underline;
+    font-weight: 700;
+}
+
