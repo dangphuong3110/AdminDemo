@@ -42,7 +42,7 @@ Route::prefix('/admin')->group(function () {
     Route::get('/reset', [AccountController::class, 'showEmailForm'])->name('show-email-form');
     Route::post('/reset_password_without_token', [AccountController::class, 'validatePasswordRequest'])->name('without-token');
     Route::get('/reset_password', [AccountController::class, 'showResetPasswordForm'])->name('show-reset-password-form');
-    Route::match(['post', 'put'], '/reset_password_with_token/token={token?}', [AccountController::class, 'resetPassword'])->name('with-token');
+    Route::match(['post', 'put'], '/reset_password_with_token?token={token?}', [AccountController::class, 'resetPassword'])->name('with-token');
 });
 
 
