@@ -6,7 +6,7 @@
             <div class="row" style="height: 200px; width:350px">
                 <div class="col-12 right">
                     <div class="input-box">
-                        <form action="{{ route('with-token', $token) }}" method="post">
+                        <form action="{{ route('with-token', ['token' => $token]) }}" method="post">
                             @csrf
                             @method('PUT')
                             <div class="input-field">
