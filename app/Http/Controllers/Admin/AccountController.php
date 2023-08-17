@@ -32,7 +32,7 @@ class AccountController extends Controller
     {
         return view('admin.setting.account-create');
     }
-    
+
     /**
      * Store a newly created resource in storage.
      */
@@ -187,7 +187,7 @@ class AccountController extends Controller
     {
         $user = DB::table('users')->where('email', $email)->select('name', 'email')->first();
 
-        $link = 'http://localhost:8000/admin/reset_password?token=' . $token . '&email=' . urlencode($user->email);
+        $link = env('APP_URL') . '/admin/reset_password?token=' . $token . '&email=' . urlencode($user->email);
 
         try {
             SendEmailResetPassword::dispatch($user, $link);
