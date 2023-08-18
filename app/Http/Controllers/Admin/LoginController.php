@@ -58,7 +58,7 @@ class LoginController extends Controller
                 'user_id' => Auth::user()->id,
                 'ip_address' => $request->ip(),
                 'user_agent' => $request->userAgent(),
-                'payload' => '',
+                'payload' => 'value',
                 'last_activity' => time(),
             ]);
 

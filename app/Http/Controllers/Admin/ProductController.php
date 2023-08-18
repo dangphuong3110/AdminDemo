@@ -36,6 +36,29 @@ class ProductController extends Controller
         return view('admin.product.create', compact('listCategories', 'manufacturers'));
     }
 
+    public function attachParentCategories($product, $categoryIds): void
+    {
+        $product->categories()->detach();
+        foreach ($categoryIds as $categoryId) {
+            $product->categories()->syncWithoutDetaching($categoryId);
+            $this->attachParentCategoriesRecursive($product, $categoryId);
+        }
+    }
+
+    public function attachParentCategoriesRecursive($product, $categoryId): void
+    {
+        $category = Category::where('id', $categoryId)->first();
+        if ($category) {
+            $parentCategory = Category::where('id', $category->parent_id)->first();
+
+            if ($parentCategory) {
+                $product->categories()->syncWithoutDetaching($parentCategory);
+
+                $this->attachParentCategoriesRecursive($product, $parentCategory->id);
+            }
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -68,7 +91,10 @@ class ProductController extends Controller
         $product->manufacturer_id = $request->input('manufacturer');
 
         $product->save();
-        $product->categories()->attach($request->input('category_ids'));
+
+        if ($request->input('category_ids')) {
+            $this->attachParentCategories($product, $request->input('category_ids'));
+        }
 
         $image = $request->file('image');
         if($image) {
@@ -147,7 +173,9 @@ class ProductController extends Controller
         $product->manufacturer_id = $request->input('manufacturer');
 
         $product->save();
-        $product->categories()->sync($request->input('category_ids'));
+        if ($request->input('category_ids')) {
+            $this->attachParentCategories($product, $request->input('category_ids'));
+        }
 
         $image = $request->file('image');
         if($image) {
