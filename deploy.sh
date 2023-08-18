@@ -18,7 +18,7 @@ php artisan migrate --force
 
 # Enter maintenance mode or return true
 # if already is in maintenance mode
-(php artisan down) || true
+(php artisan down)
 
 
 # Clear the old cache
