@@ -162,7 +162,7 @@ class CategoryController extends Controller
         }
         return $inputs;
     }
-    
+
     public function showCategoriesInTable($categories, $parent_id = 0, $char = '', $numbering = '')
     {
         $inputs = '';

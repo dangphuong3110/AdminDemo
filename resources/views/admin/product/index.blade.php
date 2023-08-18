@@ -24,6 +24,47 @@
         </div>
     @endif
 
+    <div class="card mb-3">
+        <div class="card-header">List</div>
+        <div class="card-body">
+            <form action="{{ route('filter-product') }}" method="post">
+                @csrf
+                <div class="row">
+                    <div class="col-xxl-6 mb-3">
+                        <label class="col-12 mb-1 col-label-form">Name Product</label>
+                        <div class="col-12">
+                            <input type="text" name="name-product-filter" class="form-control" value="{{ $filter_name_product ?: '' }}"/>
+                        </div>
+                    </div>
+                    <div class="col-xxl-3 mb-3">
+                        <label class="col-12 mb-1 col-label-form">Category</label>
+                        <div class="col-12">
+                            <select name="category-filter" class="form-select">
+                                <option value="0">          </option>
+                                {!! $listCategories !!}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-xxl-2 mb-3">
+                        <label class="col-12 mb-1 col-label-form">Status</label>
+                        <div class="col-12">
+                            <select name="status-filter" class="form-select">
+                                <option selected value="2">           </option>
+                                <option value="1" {{ $filter_status == 1 ? 'selected' : '' }}>On</option>
+                                <option value="0" {{ $filter_status == 0 ? 'selected' : '' }}>Off</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-xxl-1 mt-4">
+                        <div class="col-12 mt-1">
+                            <button type="submit" class="btn btn-outline-primary"><i class="fa-solid fa-filter"></i> Filter</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="card">
         <div class="card-header title">
             <div class="row">
@@ -33,7 +74,7 @@
                 </div>
             </div>
         </div>
-        <div class="card-body">
+        <div class="card-body table-responsive">
             <table class="table table-bordered table-hover">
                 <thead>
                 <tr>
@@ -87,7 +128,6 @@
                                         </div>
                                     </div>
                                 </form>
-
                             </td>
                         </tr>
                         </tbody>
@@ -99,7 +139,6 @@
                     </tr>
                 @endif
             </table>
-            {!! $products->render('pagination::bootstrap-5') !!}
         </div>
     </div>
 

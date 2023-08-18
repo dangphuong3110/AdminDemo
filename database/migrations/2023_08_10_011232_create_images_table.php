@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('images', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained();
-            $table->string('path');
+            $table->string('path')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

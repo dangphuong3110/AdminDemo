@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Manufacturer;
 use App\Models\Product;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -18,9 +19,34 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::latest()->paginate(5);
+        $products = Product::latest()->get();
+        $categories = Category::orderBy('sort_order', 'ASC')->get();
+        $listCategories = $this->showCategoriesInSelectOption(0, $categories);
+        $filter_name_product = '';
+        $filter_status = '';
 
-        return view('admin.product.index', compact('products'))->with('i', (request()->input('page', 1) - 1) * 5);
+        return view('admin.product.index', compact('filter_status', 'filter_name_product', 'products', 'listCategories'));
+    }
+
+    public function filterProduct(Request $request)
+    {
+        $filter_name_product = $request->input('name-product-filter');
+        $filter_category_id = $request->input('category-filter');
+        $filter_status = $request->input('status-filter');
+        $products = Product::when($filter_name_product, function (Builder $query) use ($filter_name_product) {
+            return $query->where('name', 'like', '%'.$filter_name_product.'%');
+        })->when($filter_category_id, function (Builder $query) use ($filter_category_id) {
+            return $query->whereHas('categories', function (Builder $q) use ($filter_category_id){
+                $q->where('id', 'like', '%'.$filter_category_id.'%');
+            });
+        })->when($filter_status != 2, function (Builder $query) use($filter_status) {
+            return $query->where('status', '=', $filter_status);
+        })->latest()->get();
+
+        $categories = Category::orderBy('sort_order', 'ASC')->get();
+        $listCategories = $this->showCategoriesInSelectOption($filter_category_id, $categories);
+
+        return view('admin.product.index', compact('filter_status', 'filter_name_product', 'products', 'listCategories'));
     }
 
     /**
@@ -192,8 +218,15 @@ class ProductController extends Controller
                 $imageName = 'product' . $product->id . '.jpg';
                 $image->move(public_path('assets/image/product'), $imageName);
                 $imgProduct = Image::where('product_id', $product->id)->first();
-                $imgProduct->path = $imageName;
-                $imgProduct->save();
+                if ($imgProduct) {
+                    $imgProduct->path = $imageName;
+                    $imgProduct->save();
+                } else {
+                    $imgProduct = new Image();
+                    $imgProduct->product_id = $product->id;
+                    $imgProduct->path = $imageName;
+                    $imgProduct->save();
+                }
             } else {
                 return redirect()->route('products.edit', $product->id)->with('failure', 'The uploaded file must be in the correct image format (jpg, jpeg, png, gif).');
             }
@@ -245,6 +278,28 @@ class ProductController extends Controller
             }
         }
         return $inputs;
+    }
+
+    public function showCategoriesInSelectOption($categoryChoosen, $categories, $parent_id = 0, $char = '')
+    {
+        $options = '';
+        foreach ($categories as $key => $category)
+        {
+            if($category['parent_id'] == $parent_id)
+            {
+                if ($category->id == $categoryChoosen) {
+                    $options .= '<option value="' . $category['id'] . '" selected>';
+                } else {
+                    $options .= '<option value="' . $category['id'] . '">';
+                }
+                $options .= $char . $category['name'];
+                $options .= '</option>';
+                $categories->forget($key);
+
+                $options .= $this->showCategoriesInSelectOption($categoryChoosen, $categories, $category['id'], $char . '|---');
+            }
+        }
+        return $options;
     }
 
     public function updateStatusProduct(Request $request, $productId) {
