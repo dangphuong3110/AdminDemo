@@ -4,17 +4,17 @@ set -e
 echo "Deployment started   ..."
 
 # Install composer dependencies
-composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+#composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 
 # Compile npm assets
-npm i
-npm run prod
+#npm i
+#npm run prod
 
 # Run database migrations
 php artisan migrate --force
 
 # Pull the latest version of the app
-git pull origin master
+#git pull origin master
 
 # Enter maintenance mode or return true
 # if already is in maintenance mode
@@ -25,7 +25,7 @@ git pull origin master
 php artisan clear-compiled
 
 # Recreate cache
-php artisan optimize
+php artisan optimize:clear
 
 # Exit maintenance mode
 php artisan up
