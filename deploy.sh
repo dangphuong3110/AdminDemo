@@ -7,8 +7,8 @@ echo "Deployment started   ..."
 #composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 
 # Compile npm assets
-npm i
-npm run prod
+#npm i
+#npm run prod
 
 # Run database migrations
 php artisan migrate
