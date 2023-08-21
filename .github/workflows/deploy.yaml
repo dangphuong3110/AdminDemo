@@ -31,4 +31,4 @@ jobs:
           username: "${{ secrets.USERNAME }}"
           port: "${{ secrets.PORT }}"
           key: "${{ secrets.SSH_PRIVATE_KEY }}"
-          script: "cd /home/rqdxsywohosting/public_html && ./deploy.sh"
+          script: "cd /home/rqdxsywohosting/public_html && sh deploy.sh"
