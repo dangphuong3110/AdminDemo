@@ -11,7 +11,7 @@ npm i
 npm run prod
 
 # Run database migrations
-php artisan migrate --force
+php artisan migrate
 
 # Pull the latest version of the app
 git pull origin master
