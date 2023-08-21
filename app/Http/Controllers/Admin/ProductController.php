@@ -37,7 +37,7 @@ class ProductController extends Controller
             return $query->where('name', 'like', '%'.$filter_name_product.'%');
         })->when($filter_category_id, function (Builder $query) use ($filter_category_id) {
             return $query->whereHas('categories', function (Builder $q) use ($filter_category_id){
-                $q->where('id', 'like', '%'.$filter_category_id.'%');
+                $q->where('id', 'like', $filter_category_id);
             });
         })->when($filter_status != 2, function (Builder $query) use($filter_status) {
             return $query->where('status', '=', $filter_status);
