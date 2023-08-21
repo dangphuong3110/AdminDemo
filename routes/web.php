@@ -25,9 +25,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [HomepageController::class, 'index']);
         Route::resource('/homepage', HomepageController::class);
         Route::resource('/products', ProductController::class);
-        Route::get('products', [ProductController::class, 'index'])->name('products.index');
         Route::post('/products/update-status-product/{productId}', [ProductController::class, 'updateStatusProduct'])->name('update-status-product');
-        Route::post('/products', [ProductController::class, 'filterProduct'])->name('filter-product');
+        Route::post('/products/filter-product', [ProductController::class, 'filterProduct'])->name('filter-product');
         Route::resource('/categories', CategoryController::class);
         Route::post('/categories/update-status-category/{categoryId}', [CategoryController::class, 'updateStatusCategory'])->name('update-status-category');
         Route::resource('/manufacturers', ManufacturerController::class);
