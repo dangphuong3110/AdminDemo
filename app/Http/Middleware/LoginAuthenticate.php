@@ -15,6 +15,10 @@ class LoginAuthenticate
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if (!auth()->check()) {
+            session(['intended_url' => url()->current()]);
+        }
+
         if($request->user()){
             return $next($request);
         }

@@ -62,6 +62,12 @@ class LoginController extends Controller
                 'last_activity' => time(),
             ]);
 
+            if (session()->has('intended_url')) {
+                $intendedUrl = session('intended_url');
+                session()->forget('intended_url');
+                return redirect()->to($intendedUrl);
+            }
+
             return redirect()->intended('/admin/homepage');
         }
 
