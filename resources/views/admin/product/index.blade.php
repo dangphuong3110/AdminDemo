@@ -55,7 +55,6 @@
                             </select>
                         </div>
                     </div>
-                    <input type="hidden" name="page" value="{{ $products->currentPage() }}">
                     <div class="col-xxl-1 mt-4">
                         <div class="col-12 mt-1">
                             <button type="submit" class="btn btn-outline-primary"><i class="fa-solid fa-filter"></i> Filter</button>
