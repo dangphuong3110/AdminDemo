@@ -29,7 +29,7 @@
         </div>
         <div class="card-body">
             <table class="table table-bordered table-hover">
-                <thead>
+                <thead class="table-dark">
                 <tr>
                     <th class="text-center">Username</th>
                     <th class="text-center">Created at</th>

@@ -24,11 +24,13 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('/admin')->group(function () {
         Route::get('/', [HomepageController::class, 'index']);
         Route::resource('/homepage', HomepageController::class);
-        Route::resource('/products', ProductController::class);
         Route::post('/products/update-status-product/{productId}', [ProductController::class, 'updateStatusProduct'])->name('update-status-product');
-        Route::post('/products/filter-product', [ProductController::class, 'filterProduct'])->name('filter-product');
-        Route::resource('/categories', CategoryController::class);
+        Route::get('/products/filter-product', [ProductController::class, 'filterProduct'])->name('filter-product');
+        Route::post('/products/copy-product', [ProductController::class, 'copyProduct'])->name('copy-product');
+        Route::post('/products/delete-product', [ProductController::class, 'deleteProduct'])->name('delete-product');
+        Route::resource('/products', ProductController::class);
         Route::post('/categories/update-status-category/{categoryId}', [CategoryController::class, 'updateStatusCategory'])->name('update-status-category');
+        Route::resource('/categories', CategoryController::class);
         Route::resource('/manufacturers', ManufacturerController::class);
         Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
         Route::get('/setting/general_setting', [SettingController::class, 'index'])->name('general-setting');

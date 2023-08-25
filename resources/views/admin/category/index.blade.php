@@ -35,7 +35,7 @@
         </div>
         <div class="card-body table-responsive">
             <table class="table table-bordered table-hover">
-                <thead>
+                <thead class="table-dark">
                 <tr>
                     <th>STT</th>
                     <th>Name Category</th>

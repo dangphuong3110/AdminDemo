@@ -35,7 +35,7 @@
         </div>
         <div class="card-body table-responsive">
             <table class="table table-bordered table-hover">
-                <thead>
+                <thead class="table-dark">
                 <tr>
                     <th class="text-center">Name</th>
                     <th class="text-center">Edit</th>

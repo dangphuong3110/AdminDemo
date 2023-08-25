@@ -86,10 +86,11 @@
         </div>
     </div>
 </div>
-<script src="https://cdn.tiny.cloud/1/9oe1v6bt9hgb2pfpftcb1k7udtf7bpnpnk2fhzais9rwf25l/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script src="https://cdn.tiny.cloud/1/ea10g924cjxiko0v5pbqmfozvr89vzzxnefhzkggqqnblhnw/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <script>
+    //LIBRARY TINYMCE
     tinymce.init({
         selector: 'textarea',
         plugins: 'ai tinycomments mentions anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed permanentpen footnotes advtemplate advtable advcode editimage tableofcontents mergetags powerpaste tinymcespellchecker autocorrect a11ychecker typography inlinecss',
@@ -102,6 +103,8 @@
         ],
         ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant"))
     });
+
+    //UPDATE STATUS PRODUCT
     const checkboxProducts = document.querySelectorAll(".form-check-input-product");
     checkboxProducts.forEach(checkbox => {
         checkbox.addEventListener("click", function () {
@@ -122,6 +125,7 @@
         });
     }
 
+    //UPDATE STATUS CATEGORY
     const checkboxCategories = document.querySelectorAll(".form-check-input-category");
     checkboxCategories.forEach(checkbox => {
         checkbox.addEventListener("click", function () {
@@ -142,9 +146,76 @@
         });
     }
 
+    //LOGOUT
     function confirmLogout() {
         document.getElementById('logout-form').submit();
     }
+
+    //SELECT ALL CHECKBOX OF PRODUCT
+    const mainCheckbox = document.getElementById('main-checkbox');
+    const buttonOptions = document.querySelectorAll('.btn-option');
+    const allCheckboxProducts = document.querySelectorAll('.checkbox-for-copy-or-delete');
+    mainCheckbox.addEventListener('click', function () {
+        buttonOptions.forEach(buttonOption => {
+            if (mainCheckbox.checked) {
+                buttonOption.classList.remove('hidden');
+            } else {
+                buttonOption.classList.add('hidden');
+            }
+        });
+
+        allCheckboxProducts.forEach(checkboxProduct => {
+            checkboxProduct.checked = !!mainCheckbox.checked;
+        });
+    });
+
+    //HIDDEN OR DISPLAY BUTTON COPY AND DELETE
+    allCheckboxProducts.forEach(checkboxProduct => {
+        checkboxProduct.addEventListener('change', function () {
+            buttonOptions.forEach(buttonOption => {
+                if (areAnyCheckboxesChecked()) {
+                    buttonOption.classList.remove('hidden');
+                } else {
+                    buttonOption.classList.add('hidden');
+                }
+            });
+
+        });
+    });
+
+    function areAnyCheckboxesChecked() {
+        return Array.from(allCheckboxProducts).some(checkboxProduct => checkboxProduct.checked);
+    }
+
+    //COPY PRODUCT
+    const buttonCopyProduct = document.getElementById('btn-copy');
+
+    buttonCopyProduct.addEventListener('click', function () {
+        const arraySelectedItems = [];
+        const checkboxesChecked = document.querySelectorAll('.checkbox-for-copy-or-delete:checked');
+        const inputs = document.getElementById('hiddenInputCopy');
+        checkboxesChecked.forEach(checkbox => {
+            arraySelectedItems.push(checkbox.value);
+        });
+
+        inputs.value = arraySelectedItems;
+    });
+
+    //DELETE PRODUCT
+    const buttonDeleteProduct = document.getElementById('btn-delete');
+
+    buttonDeleteProduct.addEventListener('click', function () {
+        const arraySelectedItems = [];
+        const checkboxesChecked = document.querySelectorAll('.checkbox-for-copy-or-delete:checked');
+        const inputs = document.getElementById('hiddenInputDelete');
+        checkboxesChecked.forEach(checkbox => {
+            arraySelectedItems.push(checkbox.value);
+        });
+
+        inputs.value = arraySelectedItems;
+        console.log(inputs.value);
+    })
+
 </script>
 <script src="{{ asset('assets/js/app.js') }}"></script>
 </body>

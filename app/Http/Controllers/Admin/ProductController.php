@@ -9,8 +9,11 @@ use App\Models\Product;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Image;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -19,7 +22,49 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::latest()->get();
+        $productCollection = new Collection();
+        $lastId = Product::max('id');
+        $chunkSize = 1000;
+
+        while (true) {
+            $chunkProducts = DB::table('products')
+                ->select('id', 'name', 'quantity', 'price', 'status')
+                ->where('id', '<=', $lastId)
+                ->orderBy('id', 'desc')
+                ->limit($chunkSize)
+                ->get();
+
+            if ($chunkProducts->isEmpty()) {
+                break;
+            }
+
+            foreach ($chunkProducts as $p) {
+                $product = new \stdClass();
+                $product->id = $p->id;
+                $product->name = $p->name;
+                $product->quantity = $p->quantity;
+                $product->price = $p->price;
+                $product->status = $p->status;
+                $productCollection->push($product);
+            }
+            $lastId -= $chunkSize;
+        }
+
+        $perPage = 25;
+        $currentPage = \request('page') ?? 1;
+
+        $startIndex = ($currentPage - 1) * $perPage + 1;
+        $products = new LengthAwarePaginator(
+            $productCollection->slice($startIndex - 1, $perPage),
+            Product::count(),
+            $perPage,
+            $currentPage,
+            [
+                'path' => request()->url(),
+                'query' => request()->query(),
+            ],
+        );
+
         $categories = Category::orderBy('sort_order', 'ASC')->get();
         $listCategories = $this->showCategoriesInSelectOption(0, $categories);
         $filter_name_product = '';
@@ -30,23 +75,44 @@ class ProductController extends Controller
 
     public function filterProduct(Request $request)
     {
-        $filter_name_product = $request->input('name-product-filter');
-        $filter_category_id = $request->input('category-filter');
-        $filter_status = $request->input('status-filter');
-        $products = Product::when($filter_name_product, function (Builder $query) use ($filter_name_product) {
-            return $query->where('name', 'like', '%'.$filter_name_product.'%');
-        })->when($filter_category_id, function (Builder $query) use ($filter_category_id) {
-            return $query->whereHas('categories', function (Builder $q) use ($filter_category_id){
-                $q->where('id', 'like', $filter_category_id);
-            });
-        })->when($filter_status != 2, function (Builder $query) use($filter_status) {
-            return $query->where('status', '=', $filter_status);
-        })->latest()->get();
+        $filter_name_product = $request->query('name-product-filter');
+        $filter_category_id = $request->query('category-filter');
+        $filter_status = $request->query('status-filter');
 
-        $categories = Category::orderBy('sort_order', 'ASC')->get();
-        $listCategories = $this->showCategoriesInSelectOption($filter_category_id, $categories);
+        if ($filter_name_product || $filter_category_id != 0 || $filter_status != 2) {
+            $productCollection = Product::when($filter_name_product, function (Builder $query) use ($filter_name_product) {
+                return $query->where('name', 'like', '%' . $filter_name_product . '%');
+            })->when($filter_category_id != 0, function (Builder $query) use ($filter_category_id) {
+                return $query->whereHas('categories', function (Builder $q) use ($filter_category_id) {
+                    $q->where('id', 'like', $filter_category_id);
+                });
+            })->when($filter_status != 2, function (Builder $query) use ($filter_status) {
+                return $query->where('status', '=', $filter_status);
+            })->orderBy('id', 'desc')->get();
 
-        return view('admin.product.index', compact('filter_status', 'filter_name_product', 'products', 'listCategories'));
+            $categories = Category::orderBy('sort_order', 'ASC')->get();
+            $listCategories = $this->showCategoriesInSelectOption($filter_category_id, $categories);
+
+            $perPage = 25;
+            $currentPage = \request('page') ?? 1;
+
+            $startIndex = ($currentPage - 1) * $perPage + 1;
+
+            $products = new LengthAwarePaginator(
+                $productCollection->slice($startIndex - 1, $perPage),
+                $productCollection->count(),
+                $perPage,
+                $currentPage,
+                [
+                    'path' => request()->url(),
+                    'query' => request()->query(),
+                ],
+            );
+
+            return view('admin.product.index', compact('filter_status', 'filter_name_product', 'products', 'listCategories'));
+        }
+
+        return redirect()->route('products.index');
     }
 
     /**
@@ -88,7 +154,7 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request) : RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
         $validator = Validator::make($request->all(), [
             'name-product' => 'required|max:255',
@@ -123,11 +189,11 @@ class ProductController extends Controller
         }
 
         $image = $request->file('image');
-        if($image) {
+        if ($image) {
             $extension = $image->getClientOriginalExtension();
 
             $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
-            if(in_array($extension, $allowedExtensions)) {
+            if (in_array($extension, $allowedExtensions)) {
                 $imageName = 'product' . $product->id . '.jpg';
                 $image->move(public_path('assets/image/product'), $imageName);
                 $imgProduct = new Image();
@@ -189,10 +255,9 @@ class ProductController extends Controller
         $product->link_video = $request->input('video');
 
         $displayStatus = $request->input('display-status');
-        if($displayStatus === 'on'){
+        if ($displayStatus === 'on') {
             $product->status = true;
-        }
-        else{
+        } else {
             $product->status = false;
         }
 
@@ -204,14 +269,14 @@ class ProductController extends Controller
         }
 
         $image = $request->file('image');
-        if($image) {
+        if ($image) {
             $extension = $image->getClientOriginalExtension();
 
             $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
-            if(in_array($extension, $allowedExtensions)) {
-                if($product->images->first()) {
+            if (in_array($extension, $allowedExtensions)) {
+                if ($product->images->first()) {
                     $oldImagePath = public_path('assets/image/product/' . $product->images->first()->path);
-                    if(file_exists($oldImagePath)) {
+                    if (file_exists($oldImagePath)) {
                         unlink($oldImagePath);
                     }
                 }
@@ -241,16 +306,17 @@ class ProductController extends Controller
     public function destroy(string $id)
     {
         $product = Product::findOrFail($id);
-        if ($product->images->first()) {
-            $oldImagePath = public_path('assets/image/product/' . $product->images->first()->path);
-            if (file_exists($oldImagePath)) {
-                unlink($oldImagePath);
-            }
-        }
+//        if ($product->images->first()) {
+//            $oldImagePath = public_path('assets/image/product/' . $product->images->first()->path);
+//            if (file_exists($oldImagePath)) {
+//                unlink($oldImagePath);
+//            }
+//        }
         $image = Image::where('product_id', $product->id)->first();
         if ($image) {
             $image->delete();
         }
+
         $product->delete();
 
         return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
@@ -259,22 +325,20 @@ class ProductController extends Controller
     public function showCategories($product, $categories, $parent_id = 0, $char = '')
     {
         $inputs = '';
-        foreach ($categories as $key => $category)
-        {
-            if($category['parent_id'] == $parent_id)
-            {
+        foreach ($categories as $key => $category) {
+            if ($category['parent_id'] == $parent_id) {
                 $inputs .= '<div class="form-check">';
                 if ($product && $product->categories->contains($category)) {
-                    $inputs .= '<input class="form-check-input" type="checkbox" name="category_ids[]" value="'.$category['id'].'" id="category_'.$category['id'].'" checked>';
+                    $inputs .= '<input class="form-check-input" type="checkbox" name="category_ids[]" value="' . $category['id'] . '" id="category_' . $category['id'] . '" checked>';
                 } else {
                     $inputs .= '<input class="form-check-input" type="checkbox" name="category_ids[]" value="' . $category['id'] . '" id="category_' . $category['id'] . '">';
                 }
-                $inputs .= '<label for="category_'.$category['id'].'">'.$char.$category['name'].'</label>';
+                $inputs .= '<label for="category_' . $category['id'] . '">' . $char . $category['name'] . '</label>';
                 $inputs .= '</div>';
 
                 $categories->forget($key);
 
-                $inputs .= $this->showCategories($product, $categories, $category['id'], $char . $category['name']. ' > ');
+                $inputs .= $this->showCategories($product, $categories, $category['id'], $char . $category['name'] . ' > ');
             }
         }
         return $inputs;
@@ -283,10 +347,8 @@ class ProductController extends Controller
     public function showCategoriesInSelectOption($categoryChoosen, $categories, $parent_id = 0, $char = '')
     {
         $options = '';
-        foreach ($categories as $key => $category)
-        {
-            if($category['parent_id'] == $parent_id)
-            {
+        foreach ($categories as $key => $category) {
+            if ($category['parent_id'] == $parent_id) {
                 if ($category->id == $categoryChoosen) {
                     $options .= '<option value="' . $category['id'] . '" selected>';
                 } else {
@@ -302,7 +364,8 @@ class ProductController extends Controller
         return $options;
     }
 
-    public function updateStatusProduct(Request $request, $productId) {
+    public function updateStatusProduct(Request $request, $productId)
+    {
         $isChecked = (boolean)$request->input('isChecked');
 
         $status = $isChecked ? 1 : 0;
@@ -310,5 +373,64 @@ class ProductController extends Controller
         $product = Product::findOrFail($productId);
         $product->status = $status;
         $product->save();
+    }
+
+    public function copyProduct(Request $request)
+    {
+        $selectedItems = $request->input('selectedItemsCopy');
+        $arraySelectedItems = explode(',', $selectedItems);
+        $products = Product::whereIn('id', $arraySelectedItems)->orderBy('updated_at', 'asc')->get();
+
+        if ($products) {
+            foreach ($products as $product) {
+                $newProduct = new Product();
+                $newProduct->manufacturer_id = $product->manufacturer_id;
+                $newProduct->name = $product->name;
+                $newProduct->shortDesc = $product->shortDesc;
+                $newProduct->detailDesc = $product->detailDesc;
+                $newProduct->price = $product->price;
+                $newProduct->quantity = $product->quantity;
+                $newProduct->link_video = $product->link_video;
+                $newProduct->status = false;
+
+                $newProduct->save();
+                foreach ($product->categories as $category) {
+                    $newProduct->categories()->attach($category->id);
+                }
+
+                $image = Image::where('product_id', $product->id)->first();
+                if ($image) {
+                    $newImage = new Image();
+                    $newImage->product_id = $newProduct->id;
+                    $newImage->path = $image->path;
+
+                    $newImage->save();
+                }
+            }
+
+            return redirect()->route('products.index')->with('success', 'Product copied successfully');
+        }
+
+        return redirect()->route('products.index')->with('error', 'Product not found');
+    }
+
+    public function deleteProduct(Request $request)
+    {
+        $selectedItems = $request->input('selectedItemsDelete');
+        $arraySelectedItems = explode(',', $selectedItems);
+        $products = Product::whereIn('id', $arraySelectedItems)->get();
+
+        if ($products) {
+            foreach ($products as $product) {
+                $image = Image::where('product_id', $product->id)->first();
+                if ($image) {
+                    $image->delete();
+                }
+
+                $product->delete();
+            }
+            return redirect()->route('products.index')->with('success', 'Product deleted successfully');
+        }
+        return redirect()->route('products.index')->with('error', 'Product not found');
     }
 }

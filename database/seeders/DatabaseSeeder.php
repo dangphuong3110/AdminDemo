@@ -27,12 +27,12 @@ class DatabaseSeeder extends Seeder
 
         Schema::disableForeignKeyConstraints();
         Category::truncate();
-//        Category::factory(10)->create();
+        Category::factory(100)->create();
         Manufacturer::truncate();
         Manufacturer::factory(10)->create();
         Product::truncate();
-//        Product::factory(15)->create();
+        Product::factory(100000)->create();
         CategoryProduct::truncate();
-        CategoryProduct::factory(8)->create();
+//        CategoryProduct::factory(8)->create();
     }
 }
