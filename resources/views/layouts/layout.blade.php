@@ -213,7 +213,6 @@
         });
 
         inputs.value = arraySelectedItems;
-        console.log(inputs.value);
     })
 
 </script>

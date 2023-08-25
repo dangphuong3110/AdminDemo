@@ -78,7 +78,25 @@
                 <form method="post" action="{{ route('delete-product') }}">
                     @csrf
                     <input type="hidden" name="selectedItemsDelete" value="" id="hiddenInputDelete">
-                    <button type="submit" id="btn-delete" class="btn btn-danger hidden btn-option"><i class="fa-solid fa-trash"></i> Delete product</button>
+                    <button type="button" id="btn-delete" class="btn btn-danger hidden btn-option" data-bs-toggle="modal" data-bs-target="#confirmDelete-all"><i class="fa-solid fa-trash"></i> Delete product</button>
+                    <!-- Modal -->
+                    <div class="modal fade" id="confirmDelete-all" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered text-center">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="confirmDeleteLabel">Delete Product</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Do you really want to delete this product?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <input type="submit" class="btn btn-danger" value="Delete"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </div>
             <div class="col-4 ms-auto mb-3">
