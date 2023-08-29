@@ -56,18 +56,18 @@
             </div>
             <div class="dropdown-center mt-3">
                 <button class="btn btn-secondary dropdown-toggle width-100" type="button" data-bs-toggle="dropdown">
-                    Options
-                </button>
-                <ul class="dropdown-menu dropdown-menu-dark">
-                    <li><a class="dropdown-item" href="{{ route('option.index') }}">Scan text from Image</a></li>
-                </ul>
-            </div>
-            <div class="dropdown-center mt-3">
-                <button class="btn btn-secondary dropdown-toggle width-100" type="button" data-bs-toggle="dropdown">
                     Settings
                 </button>
                 <ul class="dropdown-menu dropdown-menu-dark">
                     <li><a class="dropdown-item" href="{{ route('general-setting') }}">General Settings</a></li>
+                </ul>
+            </div>
+            <div class="dropdown-center mt-3">
+                <button class="btn btn-secondary dropdown-toggle width-100" type="button" data-bs-toggle="dropdown">
+                    Options
+                </button>
+                <ul class="dropdown-menu dropdown-menu-dark">
+                    <li><a class="dropdown-item" href="{{ route('option.index') }}">Scan text from Image</a></li>
                 </ul>
             </div>
         </div>

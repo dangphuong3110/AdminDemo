@@ -37,15 +37,19 @@
                                 Submit
                             </button>
                         </div>
-                        <div class="text col-md-6 border border-danger">
+                        <div class="text col-md-6">
                             <h2 class="text-danger fw-bold text-decoration-underline">Result:</h2>
-                            @if(empty($result))
-                                <p>No text found in the image.</p>
-                            @else
-                                @foreach($result as $r)
-                                    <p>{{ $r }}</p>
-                                @endforeach
-                            @endif
+                            <div class="border border-danger rounded-3">
+                                <div class="ms-3 me-3">
+                                    @if(empty($result))
+                                        <p>No text found in the image.</p>
+                                    @else
+                                        @foreach($result as $r)
+                                            <p>{{ $r }}</p>
+                                        @endforeach
+                                    @endif
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

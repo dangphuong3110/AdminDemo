@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
@@ -14,7 +16,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::all();
+        $categories = Category::select('id', 'name', 'parent_id', 'status')->get();
+
         $listCategories = $this->showCategoriesInTable($categories);
 
         return view('admin.category.index', compact('categories', 'listCategories'));
@@ -26,8 +29,8 @@ class CategoryController extends Controller
     public function create()
     {
         $categories = Category::all();
-        $categoryChoosen = new Category();
-        $listCategories = $this->showCategories($categoryChoosen, $categories);
+        $categoryChosen = new Category();
+        $listCategories = $this->showCategories($categoryChosen, $categories);
 
         return view('admin.category.create', compact('listCategories'));
     }
@@ -214,8 +217,8 @@ class CategoryController extends Controller
             </tbody>';
 
                 $categories->forget($key);
-                $childNumbering = $numbering !== "" ? $numbering . "." . $count : (string) $count;
-                $inputs .= $this->showCategoriesInTable($categories, $category['id'], $char . ' |--- ', $childNumbering);
+
+                $inputs .= $this->showCategoriesInTable($categories, $category['id'], $char . ' |--- ', $numberingText);
                 $count++;
             }
         }

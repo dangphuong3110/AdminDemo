@@ -88,8 +88,7 @@ class ProductController extends Controller
                 });
             })->when($filter_status != 2, function (Builder $query) use ($filter_status) {
                 return $query->where('status', '=', $filter_status);
-            })->orderBy('id', 'desc')->get();
-
+            })->orderBy('id', 'desc')->select('id', 'name', 'quantity', 'price', 'status')->get();
             $categories = Category::orderBy('sort_order', 'ASC')->get();
             $listCategories = $this->showCategoriesInSelectOption($filter_category_id, $categories);
 
@@ -344,12 +343,12 @@ class ProductController extends Controller
         return $inputs;
     }
 
-    public function showCategoriesInSelectOption($categoryChoosen, $categories, $parent_id = 0, $char = '')
+    public function showCategoriesInSelectOption($categoryChosen, $categories, $parent_id = 0, $char = '')
     {
         $options = '';
         foreach ($categories as $key => $category) {
             if ($category['parent_id'] == $parent_id) {
-                if ($category->id == $categoryChoosen) {
+                if ($category->id == $categoryChosen) {
                     $options .= '<option value="' . $category['id'] . '" selected>';
                 } else {
                     $options .= '<option value="' . $category['id'] . '">';
@@ -358,7 +357,7 @@ class ProductController extends Controller
                 $options .= '</option>';
                 $categories->forget($key);
 
-                $options .= $this->showCategoriesInSelectOption($categoryChoosen, $categories, $category['id'], $char . '|---');
+                $options .= $this->showCategoriesInSelectOption($categoryChosen, $categories, $category['id'], $char . '|---');
             }
         }
         return $options;
