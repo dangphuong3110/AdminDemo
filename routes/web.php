@@ -8,7 +8,7 @@ use App\Http\Controllers\Admin\ManufacturerController;
 use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\SettingController;
-use App\Http\Controllers\Admin\TesseractORCController;
+use App\Http\Controllers\Admin\TesseractOCRController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,8 +36,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
         Route::get('/setting/general_setting', [SettingController::class, 'index'])->name('general-setting');
         Route::resource('/account', AccountController::class);
-        Route::get('/option', [TesseractORCController::class, 'index'])->name('option.index');
-        Route::post('/option/scan-img', [TesseractORCController::class, 'processImage'])->name('option.processImage');
+        Route::get('/option', [TesseractOCRController::class, 'index'])->name('option.index');
+        Route::post('/option/scan-img', [TesseractOCRController::class, 'processImage'])->name('option.processImage');
     });
 });
 
