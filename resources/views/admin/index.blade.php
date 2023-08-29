@@ -12,4 +12,9 @@
             {{ $message }}
         </div>
     @endif
+    @if($message = Session::get('failure'))
+        <div class="alert alert-danger">
+            {{ $message }}
+        </div>
+    @endif
 @endsection

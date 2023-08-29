@@ -77,6 +77,7 @@
             <div class="col-md-2 mb-2">
                 <form method="post" action="{{ route('delete-product') }}">
                     @csrf
+                    @method('DELETE')
                     <input type="hidden" name="selectedItemsDelete" value="" id="hiddenInputDelete">
                     <button type="button" id="btn-delete" class="btn btn-danger hidden btn-option" data-bs-toggle="modal" data-bs-target="#confirmDelete-all"><i class="fa-solid fa-trash"></i> Delete product</button>
                     <!-- Modal -->

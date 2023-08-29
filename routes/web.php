@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ManufacturerController;
 use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\TesseractORCController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,7 +28,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/products/update-status-product/{productId}', [ProductController::class, 'updateStatusProduct'])->name('update-status-product');
         Route::get('/products/filter-product', [ProductController::class, 'filterProduct'])->name('filter-product');
         Route::post('/products/copy-product', [ProductController::class, 'copyProduct'])->name('copy-product');
-        Route::post('/products/delete-product', [ProductController::class, 'deleteProduct'])->name('delete-product');
+        Route::delete('/products/delete-product', [ProductController::class, 'deleteProduct'])->name('delete-product');
         Route::resource('/products', ProductController::class);
         Route::post('/categories/update-status-category/{categoryId}', [CategoryController::class, 'updateStatusCategory'])->name('update-status-category');
         Route::resource('/categories', CategoryController::class);
@@ -35,6 +36,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
         Route::get('/setting/general_setting', [SettingController::class, 'index'])->name('general-setting');
         Route::resource('/account', AccountController::class);
+        Route::get('/option', [TesseractORCController::class, 'index'])->name('option.index');
+        Route::post('/option/scan-img', [TesseractORCController::class, 'processImage'])->name('option.processImage');
     });
 });
 

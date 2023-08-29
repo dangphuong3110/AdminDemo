@@ -5,6 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use thiagoalessio\TesseractOCR\TesseractOCR;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Http;
 
 class HomepageController extends Controller
 {
@@ -13,8 +18,7 @@ class HomepageController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
-        return view('admin.index', compact('user'));
+        return view('admin.index');
     }
 
     /**
