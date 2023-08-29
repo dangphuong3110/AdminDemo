@@ -3,7 +3,7 @@
 @section('title', 'Option')
 
 @section('route-title')
-    {{ route('homepage.index') }}
+    {{ route('option.index') }}
 @endsection
 
 @section('content')
@@ -24,10 +24,15 @@
                 @csrf
                 <div class="container">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4 mb-2">
                             <input type="file" name="img" id="imageInput" class="form-control fs-6">
+                            <select class="form-select mt-2" name="language" required>
+                                <option selected disabled>Select language (Default: Vietnamese)</option>
+                                <option value="1">English</option>
+                                <option value="2">Vietnamese</option>
+                            </select>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2 mb-2">
                             <button type="submit" class="btn btn-success">
                                 Submit
                             </button>

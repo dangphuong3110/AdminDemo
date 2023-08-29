@@ -16,6 +16,7 @@ class TesseractOCRController extends Controller
 
     public function processImage(Request $request)
     {
+        $language = $request->input('language');
         $image = $request->file('img');
         if ($image) {
             $extension = $image->getClientOriginalExtension();
@@ -29,7 +30,11 @@ class TesseractOCRController extends Controller
                     $text = new TesseractOCR();
                     $text->image($imagePath);
                     $text->executable('C:\Program Files\Tesseract-OCR\tesseract.exe');
-                    $text->lang('vie');
+                    if ($language == 1) {
+                        $text->lang('eng');
+                    } else {
+                        $text->lang('vie');
+                    }
                     $result = explode("\n", $text->run());
                 } catch (\Exception $exception) {
                     $result = [];
