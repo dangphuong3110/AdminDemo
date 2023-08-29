@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use thiagoalessio\TesseractOCR\TesseractOCR;
 
-class TesseractORCController extends Controller
+class TesseractOCRController extends Controller
 {
     public function index()
     {
