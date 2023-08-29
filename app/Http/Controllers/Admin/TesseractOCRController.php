@@ -23,9 +23,9 @@ class TesseractOCRController extends Controller
             $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
             if (in_array($extension, $allowedExtensions)) {
                 $imageName = 'test.jpg';
-                $image->move(public_path('assets/image/product'), $imageName);
-                $imagePath = public_path('assets/image/product/' . $imageName);
                 try {
+                    $image->move(public_path('assets/image/product'), $imageName);
+                    $imagePath = public_path('assets/image/product/' . $imageName);
                     $text = new TesseractOCR();
                     $text->image($imagePath);
                     $text->executable('C:\Program Files\Tesseract-OCR\tesseract.exe');
