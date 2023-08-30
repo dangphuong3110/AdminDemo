@@ -37,23 +37,29 @@
                                 <div class="row mb-3">
                                     <label class="col-12 mb-1 col-label-form">Parent Category</label>
                                     <div class="col-12">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="parent-id" id="category_0" value="0" checked>
-                                            <label for="category_0">Select a category</label>
-                                        </div>
-                                        {!! $listCategories !!}
+                                        <select class="form-select" name="parent-id">
+                                            <option selected>-----Select-----</option>
+                                            {!! $listCategories !!}
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <label class="col-12 mb-1 col-label-form">Name Category</label>
+                                    <div class="d-flex justify-content-between">
+                                        <label class="mb-1 col-label-form">Name Category</label>
+                                        <div class="mb-1">
+                                            <input class="form-check-input" type="checkbox" id="checkboxMultiCategories" name="checkboxMultiCategories">
+                                            <label class="form-check-label col-label-form" for="checkboxMultiCategories">Add multiple categories</label>
+                                        </div>
+                                    </div>
                                     <div class="col-12">
-                                        <input type="text" name="name-category" class="form-control" value="{{ old('name-category') }}" required/>
+                                        <input id="name-one-category" type="text" name="name-one-category" class="form-control" value="{{ old('name-category') }}"/>
+                                        <textarea placeholder="Enter each name of category on a separate line." id="name-multiple-categories" name="name-multiple-categories" class="form-control hidden">{{ old('name-category') }}</textarea>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <label class="col-12 mb-1 col-label-form">Description</label>
                                     <div class="col-12">
-                                        <textarea name="description" class="form-control">{{ old('description') }}</textarea>
+                                        <textarea id="tinyMCEInput" name="description" class="form-control">{{ old('description') }}</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -84,5 +90,23 @@
             </form>
         </div>
     </div>
+
+    <script>
+        //ADD MULTIPLE CATEGORIES
+        const checkboxMultipleCategories = document.getElementById('checkboxMultiCategories');
+        const nameOneCategory = document.getElementById('name-one-category');
+        const nameMultipleCategories = document.getElementById('name-multiple-categories');
+
+        checkboxMultipleCategories.checked = false;
+        checkboxMultipleCategories.addEventListener('change', function () {
+            if (checkboxMultipleCategories.checked) {
+                nameOneCategory.classList.add('hidden');
+                nameMultipleCategories.classList.remove('hidden');
+            } else {
+                nameOneCategory.classList.remove('hidden');
+                nameMultipleCategories.classList.add('hidden');
+            }
+        });
+    </script>
 
 @endsection('content')

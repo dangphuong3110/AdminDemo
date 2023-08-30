@@ -80,6 +80,40 @@ class ProductController extends Controller
         $filter_status = $request->query('status-filter');
 
         if ($filter_name_product || $filter_category_id != 0 || $filter_status != 2) {
+//            $productCollection = new Collection();
+//            $lastId = Product::max('id');
+//            $chunkSize = 1000;
+//
+//            while (true) {
+//                $chunkProducts = Product::when($filter_name_product, function (Builder $query) use ($filter_name_product) {
+//                    return $query->where('name', 'like', '%' . $filter_name_product . '%');
+//                })->when($filter_category_id != 0, function (Builder $query) use ($filter_category_id) {
+//                    return $query->whereHas('categories', function (Builder $q) use ($filter_category_id) {
+//                    });
+//                })->when($filter_status != 2, function (Builder $query) use ($filter_status){
+//                    return $query->where('status', '=', $filter_status);
+//                })->select('id', 'name', 'quantity', 'price', 'status')
+//                    ->where('id', '<=', $lastId)
+//                    ->orderBy('id', 'desc')
+//                    ->limit($chunkSize)
+//                    ->get();
+//
+//                if ($chunkProducts->isEmpty()) {
+//                    break;
+//                }
+//
+//                foreach ($chunkProducts as $p) {
+//                    $product = new \stdClass();
+//                    $product->id = $p->id;
+//                    $product->name = $p->name;
+//                    $product->quantity = $p->quantity;
+//                    $product->price = $p->price;
+//                    $product->status = $p->status;
+//                    $productCollection->push($product);
+//                }
+//                $lastId -= $chunkSize;
+//            }
+
             $productCollection = Product::when($filter_name_product, function (Builder $query) use ($filter_name_product) {
                 return $query->where('name', 'like', '%' . $filter_name_product . '%');
             })->when($filter_category_id != 0, function (Builder $query) use ($filter_category_id) {
@@ -99,7 +133,7 @@ class ProductController extends Controller
 
             $products = new LengthAwarePaginator(
                 $productCollection->slice($startIndex - 1, $perPage),
-                $productCollection->count(),
+                Product::count(),
                 $perPage,
                 $currentPage,
                 [

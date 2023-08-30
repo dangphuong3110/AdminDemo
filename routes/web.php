@@ -31,6 +31,7 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/products/delete-product', [ProductController::class, 'deleteProduct'])->name('delete-product');
         Route::resource('/products', ProductController::class);
         Route::post('/categories/update-status-category/{categoryId}', [CategoryController::class, 'updateStatusCategory'])->name('update-status-category');
+        Route::delete('/categories/delete-category', [CategoryController::class, 'deleteCategory'])->name('delete-category');
         Route::resource('/categories', CategoryController::class);
         Route::resource('/manufacturers', ManufacturerController::class);
         Route::post('/logout', [LoginController::class, 'logout'])->name('logout');

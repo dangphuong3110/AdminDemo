@@ -39,11 +39,10 @@
                                 <div class="row mb-3">
                                     <label class="col-12 mb-1 col-label-form">Parent Category</label>
                                     <div class="col-12">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="parent-id" id="category_0" value="0" {{ $category->parent_id == 0 ? 'checked' : '' }}>
-                                            <label for="category_0">Select a category</label>
-                                        </div>
-                                        {!! $listCategories !!}
+                                        <select class="form-select" name="parent-id">
+                                            <option selected>-----Select-----</option>
+                                            {!! $listCategories !!}
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -55,7 +54,7 @@
                                 <div class="row mb-3">
                                     <label class="col-12 mb-1 col-label-form">Description</label>
                                     <div class="col-12">
-                                        <textarea name="description" class="form-control">{{ $category->desc }}</textarea>
+                                        <textarea id="tinyMCEInput" name="description" class="form-control">{{ $category->desc }}</textarea>
                                     </div>
                                 </div>
                             </div>

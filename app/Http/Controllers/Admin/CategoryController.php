@@ -40,32 +40,52 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
+        $checkbox = $request->input('checkboxMultiCategories');
         $validator = Validator::make($request->all(), [
             'parent_id' => 'nullable',
-            'name-category' => 'required|max:255',
+            'name-one-category' => $checkbox == null ? 'required|max:255' : '',
+            'name-multiple-categories' => $checkbox == 'on' ? 'required|max:255' : '',
         ]);
 
         if ($validator->fails()) {
             return redirect()->route('categories.create')->withErrors($validator)->withInput();
         }
 
-        $category = new Category();
-        $category->parent_id = $request->input('parent-id');
-        $category->name = $request->input('name-category');
-        $category->desc = $request->input('description');
-        $displayStatus = $request->input('display-status');
-        $category->status = $displayStatus === 'on';
-        if ($category->parent_id) {
-            $parentCategory = Category::findOrFail($category->parent_id);
-            $category->sort_order = $parentCategory->sort_order + $parentCategory->sort_order / 1000;
-        }
-        else {
-            $category->sort_order = ceil(Category::max('sort_order') + 1);
+
+
+        $categories = new Collection();
+        if ($checkbox == null) {
+//            $category->name = $request->input('name-one-category');
+            $categories->push($request->input('name-one-category'));
+            $message = 'Category';
+        } else {
+            $multiCategories = explode("\r\n", $request->input('name-multiple-categories'));
+            foreach ($multiCategories as $c) {
+                $categories->push($c);
+            }
+            $message = 'Categories';
         }
 
-        $category->save();
+        foreach ($categories as $c) {
+            $category = new Category();
+            $category->parent_id = $request->input('parent-id');
+            $category->name = $c;
+            $category->desc = $request->input('description');
+            $displayStatus = $request->input('display-status');
+            $category->status = $displayStatus === 'on';
+            if ($category->parent_id) {
+                $parentCategory = Category::findOrFail($category->parent_id);
+                $category->sort_order = $parentCategory->sort_order + $parentCategory->sort_order / 1000;
+            }
+            else {
+                $category->sort_order = ceil(Category::max('sort_order') + 1);
+            }
 
-        return redirect()->route('categories.index')->with('success', 'Category has been added successfully.');
+            $category->save();
+        }
+
+
+        return redirect()->route('categories.index')->with('success', $message.' has been added successfully.');
     }
 
     /**
@@ -149,14 +169,11 @@ class CategoryController extends Controller
         {
             if($category['parent_id'] == $parent_id)
             {
-                $inputs .= '<div class="form-check">';
                 if ($categoryChoosen && $categoryChoosen->parent_id == $category->id) {
-                    $inputs .= '<input class="form-check-input" type="radio" name="parent-id" value="'.$category['id'].'" id="category_'.$category['id'].'" checked>';
+                    $inputs .= '<option value="'.$category['id'].'" selected>'.$char.$category['name'].'</option>';
                 } else {
-                    $inputs .= '<input class="form-check-input" type="radio" name="parent-id" value="'.$category['id'].'" id="category_'.$category['id'].'">';
+                    $inputs .= '<option value="'.$category['id'].'">'.$char.$category['name'].'</option>';
                 }
-                $inputs .= '<label for="category_'.$category['id'].'">'.$char.$category['name'].'</label>';
-                $inputs .= '</div>';
 
                 $categories->forget($key);
 
@@ -177,6 +194,11 @@ class CategoryController extends Controller
                 $numberingText = $numbering !== "" ? $numbering . "." . $count : $count;
                 $inputs .= '<tbody>';
                 $inputs .= '<tr>';
+                $inputs .= '<td>';
+                $inputs .= '<div class="form-check d-flex justify-content-center">';
+                $inputs .= '<input class="form-check-input checkbox-for-delete" type="checkbox" value="'.$category['id'].'" name="selectedItem">';
+                $inputs .= '</div>';
+                $inputs .= '</td>';
                 $inputs .= '<td>'.$numberingText.'</td>';
                 $inputs .= '<td>'.$char . $category->name.'</td>';
                 $inputs .= '<td>';
@@ -233,5 +255,20 @@ class CategoryController extends Controller
         $category = Category::findOrFail($categoryId);
         $category->status = $status;
         $category->save();
+    }
+
+    public function deleteCategory(Request $request)
+    {
+        $selectedItems = $request->input('selectedItemsDelete');
+        $arraySelectedItems = explode(',', $selectedItems);
+        $categories = Category::whereIn('id', $arraySelectedItems)->get();
+
+        if ($categories) {
+            foreach ($categories as $category) {
+                $category->delete();
+            }
+            return redirect()->route('categories.index')->with('success', 'Category deleted successfully');
+        }
+        return redirect()->route('categories.index')->with('error', 'Category not found');
     }
 }

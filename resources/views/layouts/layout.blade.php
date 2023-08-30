@@ -100,7 +100,7 @@
 <script>
     //LIBRARY TINYMCE
     tinymce.init({
-        selector: 'textarea',
+        selector: '#tinyMCEInput',
         plugins: 'ai tinycomments mentions anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed permanentpen footnotes advtemplate advtable advcode editimage tableofcontents mergetags powerpaste tinymcespellchecker autocorrect a11ychecker typography inlinecss',
         toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | align lineheight | tinycomments | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
         tinycomments_mode: 'embedded',
@@ -112,116 +112,10 @@
         ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant"))
     });
 
-    //UPDATE STATUS PRODUCT
-    const checkboxProducts = document.querySelectorAll(".form-check-input-product");
-    checkboxProducts.forEach(checkbox => {
-        checkbox.addEventListener("click", function () {
-            const isChecked = checkbox.checked;
-            const productId = checkbox.getAttribute('data-product-id');
-            updateStatusProduct(isChecked, productId);
-        });
-    });
-
-    function updateStatusProduct(isChecked, productId) {
-        fetch(`/admin/products/update-status-product/${productId}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": "{{ csrf_token() }}"
-            },
-            body: JSON.stringify({ isChecked }),
-        });
-    }
-
-    //UPDATE STATUS CATEGORY
-    const checkboxCategories = document.querySelectorAll(".form-check-input-category");
-    checkboxCategories.forEach(checkbox => {
-        checkbox.addEventListener("click", function () {
-            const isChecked = checkbox.checked;
-            const categoryId = checkbox.getAttribute('data-category-id');
-            updateStatusCategory(isChecked, categoryId);
-        });
-    });
-
-    function updateStatusCategory(isChecked, categoryId) {
-        fetch(`/admin/categories/update-status-category/${categoryId}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": "{{ csrf_token() }}"
-            },
-            body: JSON.stringify({ isChecked }),
-        });
-    }
-
     //LOGOUT
     function confirmLogout() {
         document.getElementById('logout-form').submit();
     }
-
-    //SELECT ALL CHECKBOX OF PRODUCT
-    const mainCheckbox = document.getElementById('main-checkbox');
-    const buttonOptions = document.querySelectorAll('.btn-option');
-    const allCheckboxProducts = document.querySelectorAll('.checkbox-for-copy-or-delete');
-    mainCheckbox.addEventListener('click', function () {
-        buttonOptions.forEach(buttonOption => {
-            if (mainCheckbox.checked) {
-                buttonOption.classList.remove('hidden');
-            } else {
-                buttonOption.classList.add('hidden');
-            }
-        });
-
-        allCheckboxProducts.forEach(checkboxProduct => {
-            checkboxProduct.checked = !!mainCheckbox.checked;
-        });
-    });
-
-    //HIDDEN OR DISPLAY BUTTON COPY AND DELETE
-    allCheckboxProducts.forEach(checkboxProduct => {
-        checkboxProduct.addEventListener('change', function () {
-            buttonOptions.forEach(buttonOption => {
-                if (areAnyCheckboxesChecked()) {
-                    buttonOption.classList.remove('hidden');
-                } else {
-                    buttonOption.classList.add('hidden');
-                }
-            });
-
-        });
-    });
-
-    function areAnyCheckboxesChecked() {
-        return Array.from(allCheckboxProducts).some(checkboxProduct => checkboxProduct.checked);
-    }
-
-    //COPY PRODUCT
-    const buttonCopyProduct = document.getElementById('btn-copy');
-
-    buttonCopyProduct.addEventListener('click', function () {
-        const arraySelectedItems = [];
-        const checkboxesChecked = document.querySelectorAll('.checkbox-for-copy-or-delete:checked');
-        const inputs = document.getElementById('hiddenInputCopy');
-        checkboxesChecked.forEach(checkbox => {
-            arraySelectedItems.push(checkbox.value);
-        });
-
-        inputs.value = arraySelectedItems;
-    });
-
-    //DELETE PRODUCT
-    const buttonDeleteProduct = document.getElementById('btn-delete');
-
-    buttonDeleteProduct.addEventListener('click', function () {
-        const arraySelectedItems = [];
-        const checkboxesChecked = document.querySelectorAll('.checkbox-for-copy-or-delete:checked');
-        const inputs = document.getElementById('hiddenInputDelete');
-        checkboxesChecked.forEach(checkbox => {
-            arraySelectedItems.push(checkbox.value);
-        });
-
-        inputs.value = arraySelectedItems;
-    })
 
 </script>
 <script src="{{ asset('assets/js/app.js') }}"></script>

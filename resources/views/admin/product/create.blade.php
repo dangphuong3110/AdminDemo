@@ -43,13 +43,13 @@
                                 <div class="row mb-3">
                                     <label class="col-12 mb-1 col-label-form">Short Description</label>
                                     <div class="col-12">
-                                        <textarea name="short-description" class="form-control">{{ old('short-description') }}</textarea>
+                                        <textarea id="tinyMCEInput" name="short-description" class="form-control">{{ old('short-description') }}</textarea>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <label class="col-12 mb-1 col-label-form">Detail Description</label>
                                     <div class="col-12">
-                                        <textarea name="detail-description" class="form-control">{{ old('detail-description') }}</textarea>
+                                        <textarea id="tinyMCEInput" name="detail-description" class="form-control">{{ old('detail-description') }}</textarea>
                                     </div>
                                 </div>
                                 <div class="row mb-3">

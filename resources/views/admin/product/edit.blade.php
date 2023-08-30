@@ -45,14 +45,14 @@
                                 <div class="row mb-3">
                                     <label class="col-12 mb-1 col-label-form">Short Description</label>
                                     <div class="col-12">
-                                        <textarea name="short-description" class="form-control" >{{ $product->shortDesc }}</textarea>
+                                        <textarea id="tinyMCEInput" name="short-description" class="form-control" >{{ $product->shortDesc }}</textarea>
 {{--                                        strip_tags(html_entity_decode($product->shortDesc, ENT_HTML5 | ENT_QUOTES))--}}
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <label class="col-12 mb-1 col-label-form">Detail Description</label>
                                     <div class="col-12">
-                                        <textarea name="detail-description" class="form-control" >{{ $product->detailDesc }}</textarea>
+                                        <textarea id="tinyMCEInput" name="detail-description" class="form-control" >{{ $product->detailDesc }}</textarea>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
