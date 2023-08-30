@@ -30,6 +30,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/products/copy-product', [ProductController::class, 'copyProduct'])->name('copy-product');
         Route::delete('/products/delete-product', [ProductController::class, 'deleteProduct'])->name('delete-product');
         Route::resource('/products', ProductController::class);
+        Route::get('/categories/filter-category', [CategoryController::class, 'filterCategory'])->name('filter-category');
         Route::post('/categories/update-status-category/{categoryId}', [CategoryController::class, 'updateStatusCategory'])->name('update-status-category');
         Route::delete('/categories/delete-category', [CategoryController::class, 'deleteCategory'])->name('delete-category');
         Route::resource('/categories', CategoryController::class);

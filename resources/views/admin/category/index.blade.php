@@ -24,6 +24,38 @@
         </div>
     @endif
 
+    <div class="card mb-3">
+        <div class="card-header">List</div>
+        <div class="card-body">
+            <form action="{{ route('filter-category') }}" method="GET">
+                @csrf
+                <div class="row">
+                    <div class="col-xxl-7 mb-3">
+                        <label class="col-12 mb-1 col-label-form">Name Category</label>
+                        <div class="col-12">
+                            <input type="text" name="name-category-filter" class="form-control" value="{{ $filter_name_category ?: '' }}"/>
+                        </div>
+                    </div>
+                    <div class="col-xxl-4 mb-3">
+                        <label class="col-12 mb-1 col-label-form">Status</label>
+                        <div class="col-12">
+                            <select name="status-filter" class="form-select">
+                                <option selected value="2">           </option>
+                                <option value="1" {{ $filter_status == 1 ? 'selected' : '' }}>On</option>
+                                <option value="0" {{ $filter_status == 0 ? 'selected' : '' }}>Off</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-xxl-1 mt-4">
+                        <div class="col-12 mt-1">
+                            <button type="submit" class="btn btn-outline-primary"><i class="fa-solid fa-filter"></i> Filter</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="mb-2">
         <div class="row">
             <div class="col-md-2 mb-2">

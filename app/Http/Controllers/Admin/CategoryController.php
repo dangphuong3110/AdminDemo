@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Eloquent\Builder;
 
 class CategoryController extends Controller
 {
@@ -20,7 +20,30 @@ class CategoryController extends Controller
 
         $listCategories = $this->showCategoriesInTable($categories);
 
-        return view('admin.category.index', compact('categories', 'listCategories'));
+        $filter_name_category = '';
+        $filter_status = '';
+
+        return view('admin.category.index', compact('filter_status', 'filter_name_category', 'categories', 'listCategories'));
+    }
+
+    public function filterCategory(Request $request)
+    {
+        $filter_name_category = $request->query('name-category-filter');
+        $filter_status = $request->query('status-filter');
+
+        if ($filter_name_category || $filter_status != 2) {
+            $categories = Category::when($filter_name_category, function (Builder $query) use ($filter_name_category) {
+                return $query->where('name', 'like', '%' . $filter_name_category . '%');
+            })->when($filter_status != 2, function (Builder $query) use ($filter_status) {
+                return $query->where('status', '=', $filter_status);
+            })->select('id', 'name', 'status', 'parent_id')->get();
+
+            $listCategories = $this->showCategoriesInTable($categories);
+
+            return view('admin.category.index', compact('filter_status', 'filter_name_category', 'listCategories', 'categories'));
+        }
+
+        return redirect()->route('categories.index');
     }
 
     /**
@@ -162,14 +185,14 @@ class CategoryController extends Controller
         return redirect()->route('categories.index')->with('success', 'Category deleted successfully.');
     }
 
-    public function showCategories($categoryChoosen, $categories, $parent_id = 0, $char = '')
+    public function showCategories($categoryChosen, $categories, $parent_id = 0, $char = '')
     {
         $inputs = '';
         foreach ($categories as $key => $category)
         {
             if($category['parent_id'] == $parent_id)
             {
-                if ($categoryChoosen && $categoryChoosen->parent_id == $category->id) {
+                if ($categoryChosen && $categoryChosen->parent_id == $category->id) {
                     $inputs .= '<option value="'.$category['id'].'" selected>'.$char.$category['name'].'</option>';
                 } else {
                     $inputs .= '<option value="'.$category['id'].'">'.$char.$category['name'].'</option>';
@@ -177,7 +200,7 @@ class CategoryController extends Controller
 
                 $categories->forget($key);
 
-                $inputs .= $this->showCategories($categoryChoosen, $categories, $category['id'], $char . $category['name']. ' > ');
+                $inputs .= $this->showCategories($categoryChosen, $categories, $category['id'], $char . $category['name']. ' > ');
             }
         }
         return $inputs;
