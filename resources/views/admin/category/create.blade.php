@@ -100,9 +100,13 @@
         checkboxMultipleCategories.checked = false;
         checkboxMultipleCategories.addEventListener('change', function () {
             if (checkboxMultipleCategories.checked) {
+                if (nameOneCategory.value !== '') {
+                    nameMultipleCategories.value += nameOneCategory.value + "\n";
+                }
                 nameOneCategory.classList.add('hidden');
                 nameMultipleCategories.classList.remove('hidden');
             } else {
+                nameOneCategory.value = '';
                 nameOneCategory.classList.remove('hidden');
                 nameMultipleCategories.classList.add('hidden');
             }
