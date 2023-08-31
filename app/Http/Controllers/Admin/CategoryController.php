@@ -67,7 +67,7 @@ class CategoryController extends Controller
         $validator = Validator::make($request->all(), [
             'parent_id' => 'nullable',
             'name-one-category' => $checkbox == null ? 'required|max:255' : '',
-            'name-multiple-categories' => $checkbox == 'on' ? 'required|max:255' : '',
+            'name-multiple-categories' => $checkbox == 'on' ? 'required' : '',
         ]);
 
         if ($validator->fails()) {
@@ -78,14 +78,18 @@ class CategoryController extends Controller
 
         $categories = new Collection();
         if ($checkbox == null) {
-//            $category->name = $request->input('name-one-category');
-            $categories->push($request->input('name-one-category'));
+            $categories->push(preg_replace('/^[^\p{L}]+|[^\p{L}]+$/u', '', $request->input('name-one-category')));
             $message = 'Category';
         } else {
-            $multiCategories = explode("\r\n", $request->input('name-multiple-categories'));
+            $multiCategories = explode("\n", $request->input('name-multiple-categories'));
             foreach ($multiCategories as $c) {
+                if (!strlen(preg_replace('/^[^\p{L}]+|[^\p{L}]+$/u', '', $c)))
+                    continue;
+                $c = preg_replace('/^[^\p{L}]+|[^\p{L}]+$/u', '', $c);
                 $categories->push($c);
             }
+
+            dd($categories);
             $message = 'Categories';
         }
 
@@ -147,7 +151,7 @@ class CategoryController extends Controller
 
         $category = Category::findOrFail($id);
         $category->parent_id = $request->input('parent-id');
-        $category->name = $request->input('name-category');
+        $category->name = ucwords(strtolower($request->input('name-category')));
         $category->desc = $request->input('description');
         $displayStatus = $request->input('display-status');
         $category->status = $displayStatus === 'on';

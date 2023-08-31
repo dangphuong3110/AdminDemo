@@ -38,7 +38,7 @@
                                     <label class="col-12 mb-1 col-label-form">Parent Category</label>
                                     <div class="col-12">
                                         <select class="form-select" name="parent-id">
-                                            <option selected>-----Select-----</option>
+                                            <option selected value="0">-----Select-----</option>
                                             {!! $listCategories !!}
                                         </select>
                                     </div>
