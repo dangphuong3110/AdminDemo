@@ -89,7 +89,6 @@ class CategoryController extends Controller
                 $categories->push($c);
             }
 
-            dd($categories);
             $message = 'Categories';
         }
 
@@ -151,7 +150,7 @@ class CategoryController extends Controller
 
         $category = Category::findOrFail($id);
         $category->parent_id = $request->input('parent-id');
-        $category->name = ucwords(strtolower($request->input('name-category')));
+        $category->name = preg_replace('/^[^\p{L}]+|[^\p{L}]+$/u', '', $request->input('name-category'));
         $category->desc = $request->input('description');
         $displayStatus = $request->input('display-status');
         $category->status = $displayStatus === 'on';
