@@ -29,7 +29,7 @@ class TesseractOCRController extends Controller
                     $imagePath = public_path('assets/image/product/' . $imageName);
                     $text = new TesseractOCR();
                     $text->image($imagePath);
-                    $text->executable('C:\Program Files\Tesseract-OCR\tesseract.exe');
+                    $text->executable(public_path('assets/Tesseract-OCR/tesseract.exe'));
                     if ($language == 1) {
                         $text->lang('eng');
                     } else {
