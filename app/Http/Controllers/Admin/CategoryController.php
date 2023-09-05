@@ -76,16 +76,18 @@ class CategoryController extends Controller
 
         if ($checkbox == null) {
             $categories = new Collection();
-            $categories->push(preg_replace('/^[^\p{L}]+|[^\p{L}]+$/u', '', $request->input('name-one-category')));
+            $categories->push(preg_replace('/^[^\p{L}]+|[^\p{L}0-9]+$/u', '', $request->input('name-one-category')));
             $message = 'Category';
         } else {
             $categories = new Collection();
             $multiCategories = explode("\n", $request->input('name-multiple-categories'));
             foreach ($multiCategories as $c) {
-                if (!strlen(preg_replace('/^[^\p{L}]+|[^\p{L}]+$/u', '', $c)))
+                if (!strlen(preg_replace('/^[^\p{L}]+|[^\p{L}0-9]+$/u', '', $c)))
                     continue;
-                $c = preg_replace('/^[^\p{L}]+|[^\p{L}]+$/u', '', $c);
+                $c = preg_replace('/^[^\p{L}]+|[^\p{L}0-9]+$/u', '', $c);
                 $categories->push($c);
+
+                $categories = $categories->unique();
             }
 
             $message = 'Categories';
