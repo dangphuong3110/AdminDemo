@@ -16,7 +16,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::select('id', 'name', 'parent_id', 'status')->get();
+        $categories = Category::select('id', 'name', 'parent_id', 'status')->orderBy('name')->get();
 
         $listCategories = $this->showCategoriesInTable($categories);
 
@@ -36,7 +36,7 @@ class CategoryController extends Controller
                 return $query->where('name', 'like', '%' . $filter_name_category . '%');
             })->when($filter_status != 2, function (Builder $query) use ($filter_status) {
                 return $query->where('status', '=', $filter_status);
-            })->select('id', 'name', 'status', 'parent_id')->get();
+            })->select('id', 'name', 'status', 'parent_id')->orderBy('name')->get();
 
             $listCategories = $this->showCategoriesInTable($categories);
 
