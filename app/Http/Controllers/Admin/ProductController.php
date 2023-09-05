@@ -65,7 +65,7 @@ class ProductController extends Controller
             ],
         );
 
-        $categories = Category::orderBy('sort_order', 'ASC')->get();
+        $categories = Category::orderBy('name')->get();
         $listCategories = $this->showCategoriesInSelectOption(0, $categories);
         $filter_name_product = '';
         $filter_status = '';
@@ -123,7 +123,7 @@ class ProductController extends Controller
             })->when($filter_status != 2, function (Builder $query) use ($filter_status) {
                 return $query->where('status', '=', $filter_status);
             })->orderBy('id', 'desc')->select('id', 'name', 'quantity', 'price', 'status')->get();
-            $categories = Category::orderBy('sort_order', 'ASC')->get();
+            $categories = Category::orderBy('name')->get();
             $listCategories = $this->showCategoriesInSelectOption($filter_category_id, $categories);
 
             $perPage = 25;
@@ -133,7 +133,7 @@ class ProductController extends Controller
 
             $products = new LengthAwarePaginator(
                 $productCollection->slice($startIndex - 1, $perPage),
-                Product::count(),
+                sizeof($productCollection),
                 $perPage,
                 $currentPage,
                 [
@@ -153,10 +153,10 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $categories = Category::all();
+        $categories = Category::select('id', 'parent_id', 'name')->orderBy('name')->get();
         $tempProduct = new Product();
         $listCategories = $this->showCategories($tempProduct, $categories, 0, '');
-        $manufacturers = Manufacturer::all();
+        $manufacturers = Manufacturer::select('name')->orderBy('name')->get();
 
         return view('admin.product.create', compact('listCategories', 'manufacturers'));
     }
@@ -164,9 +164,11 @@ class ProductController extends Controller
     public function attachParentCategories($product, $categoryIds): void
     {
         $product->categories()->detach();
-        foreach ($categoryIds as $categoryId) {
-            $product->categories()->syncWithoutDetaching($categoryId);
-            $this->attachParentCategoriesRecursive($product, $categoryId);
+        if ($categoryIds) {
+            foreach ($categoryIds as $categoryId) {
+                $product->categories()->syncWithoutDetaching($categoryId);
+                $this->attachParentCategoriesRecursive($product, $categoryId);
+            }
         }
     }
 
@@ -254,8 +256,8 @@ class ProductController extends Controller
      */
     public function edit(string $id)
     {
-        $categories = Category::all();
-        $manufacturers = Manufacturer::all();
+        $categories = Category::select('id', 'parent_id', 'name')->orderBy('name')->get();
+        $manufacturers = Manufacturer::select('name')->orderBy('name')->get();
         $product = Product::findOrFail($id);
         $listCategories = $this->showCategories($product, $categories);
 
@@ -295,11 +297,8 @@ class ProductController extends Controller
         }
 
         $product->manufacturer_id = $request->input('manufacturer');
-
         $product->save();
-        if ($request->input('category_ids')) {
-            $this->attachParentCategories($product, $request->input('category_ids'));
-        }
+        $this->attachParentCategories($product, $request->input('category_ids'));
 
         $image = $request->file('image');
         if ($image) {
@@ -362,9 +361,9 @@ class ProductController extends Controller
             if ($category['parent_id'] == $parent_id) {
                 $inputs .= '<div class="form-check">';
                 if ($product && $product->categories->contains($category)) {
-                    $inputs .= '<input class="form-check-input" type="checkbox" name="category_ids[]" value="' . $category['id'] . '" id="category_' . $category['id'] . '" checked>';
+                    $inputs .= '<input class="form-check-input checkbox-category" type="checkbox" name="category_ids[]" value="' . $category['id'] . '" id="category_' . $category['id'] . '" checked>';
                 } else {
-                    $inputs .= '<input class="form-check-input" type="checkbox" name="category_ids[]" value="' . $category['id'] . '" id="category_' . $category['id'] . '">';
+                    $inputs .= '<input class="form-check-input checkbox-category" type="checkbox" name="category_ids[]" value="' . $category['id'] . '" id="category_' . $category['id'] . '">';
                 }
                 $inputs .= '<label for="category_' . $category['id'] . '">' . $char . $category['name'] . '</label>';
                 $inputs .= '</div>';

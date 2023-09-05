@@ -128,7 +128,7 @@ class CategoryController extends Controller
      */
     public function edit(string $id)
     {
-        $categories = Category::where('id', '!=', $id)->get();
+        $categories = Category::where('id', '!=', $id)->orderBy('name')->get();
         $category = Category::findOrFail($id);
         $listCategories = $this->showCategories($category, $categories);
 

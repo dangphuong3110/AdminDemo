@@ -106,6 +106,10 @@
                                     <div class="col-12">
                                         {!! $listCategories !!}
                                     </div>
+                                    <div class="col-12 d-flex mt-2">
+                                        <button type="button" class="btn btn-primary me-2" id="btn-select">Select All</button>
+                                        <button type="button" class="btn btn-warning" id="btn-deselect">Deselect All</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -135,5 +139,26 @@
             </form>
         </div>
     </div>
+
+    <script>
+        //SELECT OR DESELECT ALL CATEGORY
+        const btnSelectAll = document.getElementById('btn-select');
+        const btnDeselectAll = document.getElementById('btn-deselect');
+        const checkboxesCategory = document.querySelectorAll('.checkbox-category');
+        checkboxesCategory.forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        btnSelectAll.addEventListener('click', function () {
+            checkboxesCategory.forEach(checkbox => {
+                checkbox.checked = true;
+            });
+        });
+
+        btnDeselectAll.addEventListener('click', function () {
+            checkboxesCategory.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+        });
+    </script>
 
 @endsection('content')
