@@ -104,7 +104,9 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-12">
-                                        {!! $listCategories !!}
+                                        <select name="category_ids[]" class="categories form-select" id="categories" multiple>
+                                            {!! $listCategories !!}--}}
+                                        </select>
                                     </div>
                                     <div class="col-12 d-flex mt-2">
                                         <button type="button" class="btn btn-primary me-2" id="btn-select">Select All</button>
@@ -139,25 +141,27 @@
             </form>
         </div>
     </div>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.5.1/chosen.jquery.min.js"></script>
     <script>
         //SELECT OR DESELECT ALL CATEGORY
+        $("#categories").chosen();
         const btnSelectAll = document.getElementById('btn-select');
         const btnDeselectAll = document.getElementById('btn-deselect');
-        const checkboxesCategory = document.querySelectorAll('.checkbox-category');
-        checkboxesCategory.forEach(checkbox => {
-            checkbox.checked = false;
-        });
-        btnSelectAll.addEventListener('click', function () {
-            checkboxesCategory.forEach(checkbox => {
-                checkbox.checked = true;
+        const selectCategories = $('#categories');
+        const optionsCategory = Array.from(selectCategories.find("option"));
+        btnSelectAll.addEventListener("click", function () {
+            optionsCategory.forEach(option => {
+                option.selected = true;
             });
+            selectCategories.trigger("chosen:updated");
         });
 
-        btnDeselectAll.addEventListener('click', function () {
-            checkboxesCategory.forEach(checkbox => {
-                checkbox.checked = false;
+        btnDeselectAll.addEventListener("click", function () {
+            optionsCategory.forEach(option => {
+                option.selected = false;
             });
+            selectCategories.trigger("chosen:updated");
         });
     </script>
 

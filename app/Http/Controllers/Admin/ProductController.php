@@ -359,14 +359,11 @@ class ProductController extends Controller
         $inputs = '';
         foreach ($categories as $key => $category) {
             if ($category['parent_id'] == $parent_id) {
-                $inputs .= '<div class="form-check">';
                 if ($product && $product->categories->contains($category)) {
-                    $inputs .= '<input class="form-check-input checkbox-category" type="checkbox" name="category_ids[]" value="' . $category['id'] . '" id="category_' . $category['id'] . '" checked>';
+                    $inputs .= '<option value="' .$category['id'] . '" selected>' .$char.$category['name']. '</option>';
                 } else {
-                    $inputs .= '<input class="form-check-input checkbox-category" type="checkbox" name="category_ids[]" value="' . $category['id'] . '" id="category_' . $category['id'] . '">';
+                    $inputs .= '<option value="' .$category['id'] . '">' .$char.$category['name']. '</option>';
                 }
-                $inputs .= '<label for="category_' . $category['id'] . '">' . $char . $category['name'] . '</label>';
-                $inputs .= '</div>';
 
                 $categories->forget($key);
 
