@@ -74,13 +74,12 @@ class CategoryController extends Controller
             return redirect()->route('categories.create')->withErrors($validator)->withInput();
         }
 
-
-
-        $categories = new Collection();
         if ($checkbox == null) {
+            $categories = new Collection();
             $categories->push(preg_replace('/^[^\p{L}]+|[^\p{L}]+$/u', '', $request->input('name-one-category')));
             $message = 'Category';
         } else {
+            $categories = new Collection();
             $multiCategories = explode("\n", $request->input('name-multiple-categories'));
             foreach ($multiCategories as $c) {
                 if (!strlen(preg_replace('/^[^\p{L}]+|[^\p{L}]+$/u', '', $c)))
