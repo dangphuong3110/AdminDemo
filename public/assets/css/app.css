@@ -54,3 +54,13 @@ body {
     display: none;
 }
 
+a.copy {
+    text-decoration: none;
+    color: black;
+}
+
+a.copy:hover {
+    text-decoration: underline;
+    color: rgba(213, 59, 53, 0.9);
+}
+

@@ -95,7 +95,7 @@
         </div>
     </div>
 </div>
-<script src="https://cdn.tiny.cloud/1/ea10g924cjxiko0v5pbqmfozvr89vzzxnefhzkggqqnblhnw/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script src="https://cdn.tiny.cloud/1/0nfvi4dc2eg51a609kx0foty1xtjzznqxeh5ogcaiquucfij/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <script>

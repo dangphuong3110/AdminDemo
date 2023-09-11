@@ -107,7 +107,7 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-12">
-                                        <select name="category_ids[]" class="categories form-select" id="categories" multiple>
+                                        <select name="category_ids[]" class="form-select" id="categories" data-placeholder="Select category" multiple>
                                             {!! $listCategories !!}--}}
                                         </select>
                                     </div>

@@ -43,7 +43,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="row mb-3">
+                                <div class="row">
                                     <div class="d-flex justify-content-between">
                                         <label class="mb-1 col-label-form">Name Category</label>
                                         <div class="mb-1">
@@ -51,12 +51,15 @@
                                             <label class="form-check-label col-label-form" for="checkboxMultiCategories">Add multiple categories</label>
                                         </div>
                                     </div>
-                                    <div class="col-12">
+                                    <div class="col-xxl-9 pe-0 mb-2">
                                         <input id="name-one-category" type="text" name="name-one-category" class="form-control" value="{{ old('name-category') }}"/>
                                         <textarea placeholder="Enter each name of category on a separate line." id="name-multiple-categories" name="name-multiple-categories" class="form-control hidden">{{ old('name-category') }}</textarea>
                                     </div>
+                                    <div class="col-xxl-3">
+                                        <a href="{{ route('option.index') }}" target="_blank" class="btn btn-primary">Convert image to text</a>
+                                    </div>
                                 </div>
-                                <div class="row mb-3">
+                                <div class="row mt-1">
                                     <label class="col-12 mb-1 col-label-form">Description</label>
                                     <div class="col-12">
                                         <textarea id="tinyMCEInput" name="description" class="form-control">{{ old('description') }}</textarea>

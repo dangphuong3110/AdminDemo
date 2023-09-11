@@ -53,7 +53,9 @@ Route::prefix('/admin')->group(function () {
     Route::match(['post', 'put'], '/reset_password_with_token/{token?}', [AccountController::class, 'resetPassword'])->name('with-token');
 });
 
-
+Route::get('/', function () {
+    return view('login.login');
+});
 
 Route::get('/{any}', function () {
     return view('error.error');

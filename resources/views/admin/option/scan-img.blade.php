@@ -20,7 +20,7 @@
 
     <div class="wrapper">
         <div class="img-test mt-2">
-            <form action="{{ route('option.processImage') }}" method="post" enctype="multipart/form-data">
+            <form action="{{ route('option.processImage') }}" method="post" enctype="multipart/form-data" id="form-img-input">
                 @csrf
                 <div class="container">
                     <div class="row">
@@ -38,7 +38,13 @@
                             </button>
                         </div>
                         <div class="text col-md-6">
-                            <h2 class="text-danger fw-bold text-decoration-underline">Result:</h2>
+                            <div class="d-flex justify-content-between">
+                                <h2 class="text-danger fw-bold text-decoration-underline">Result:</h2>
+                                <a href="#" class="copy" id="btn-copy-text">
+                                    <span class="before-copy" id="before-copy"><i class="fa-regular fa-copy mt-4"></i> Copy</span>
+                                    <span class="after-copy hidden" id="after-copy"><i class="fa-solid fa-check mt-4"></i> Copied</span>
+                                </a>
+                            </div>
                             <div class="border border-danger rounded-3">
                                 <div class="ms-3 me-3">
                                     @if(empty($result))
@@ -56,4 +62,37 @@
             </form>
         </div>
     </div>
+
+    <script>
+        window.addEventListener('paste', e => {
+            if (e.clipboardData.files.length > 0) {
+                const form = document.getElementById('form-img-input');
+                const imageInput = document.getElementById('imageInput');
+
+                imageInput.files = e.clipboardData.files;
+                form.submit();
+            }
+        });
+
+        const btnCopyText = document.getElementById('btn-copy-text');
+        btnCopyText.addEventListener('click', function () {
+            const textToCopy = @json($result);
+
+            const textArea = document.createElement('textarea');
+            textArea.value = textToCopy.join("\n");
+
+            document.body.appendChild(textArea);
+
+            textArea.select();
+            navigator.clipboard.writeText(textArea.value);
+
+            document.body.removeChild(textArea);
+
+            const beforeCopy = document.getElementById('before-copy');
+            const afterCopy = document.getElementById('after-copy');
+
+            beforeCopy.classList.add('hidden');
+            afterCopy.classList.remove('hidden');
+        });
+    </script>
 @endsection
