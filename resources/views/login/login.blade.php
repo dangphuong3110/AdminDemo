@@ -36,20 +36,20 @@
                             <div class="input-field">
                                 <input type="text" class="input mb-0" name="email" id="email" value="{{ old('email') }}" required/>
                                 <label for="email">Username or Email</label>
-                                @if($errors->any())
-                                    <span role="alert" style="color: red; font-size: 12px;">
-                                        <strong>{{ $errors->first('email') ?: $errors->first('username')}}</strong>
-                                    </span>
-                                @endif
+{{--                                @if($errors->any())--}}
+{{--                                    <span role="alert" style="color: red; font-size: 12px;">--}}
+{{--                                        <strong>{{ $errors->first('email') ?: $errors->first('username')}}</strong>--}}
+{{--                                    </span>--}}
+{{--                                @endif--}}
                             </div>
                             <div class="input-field mt-3">
                                 <input type="password" class="input mb-0" name="password" id="password" required>
                                 <label for="password">Password</label>
-                                @if($errors->any())
-                                    <span role="alert" style="color: red; font-size: 12px;">
-                                        <strong>{{ $errors->first('password')}}</strong>
-                                    </span>
-                                @endif
+{{--                                @if($errors->any())--}}
+{{--                                    <span role="alert" style="color: red; font-size: 12px;">--}}
+{{--                                        <strong>{{ $errors->first('password')}}</strong>--}}
+{{--                                    </span>--}}
+{{--                                @endif--}}
                             </div>
                             <div class="remember-forgot mt-2">
                                 <a href="{{ route('show-email-form') }}">Forgot Password?</a>

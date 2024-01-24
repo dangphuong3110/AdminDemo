@@ -26,6 +26,7 @@ class ProductController extends Controller
         $lastId = Product::max('id');
         $chunkSize = 1000;
 
+        $start = microtime(true);
         while (true) {
             $chunkProducts = DB::table('products')
                 ->select('id', 'name', 'quantity', 'price', 'status')
@@ -49,6 +50,9 @@ class ProductController extends Controller
             }
             $lastId -= $chunkSize;
         }
+        $time_elapsed_secs = microtime(true) - $start;
+
+        dump($time_elapsed_secs);
 
         $perPage = 25;
         $currentPage = \request('page') ?? 1;
