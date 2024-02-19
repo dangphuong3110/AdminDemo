@@ -1,0 +1,15 @@
+# Define variables
+SSH_HOST = vps_test
+APP_DIR = /home/rqdxsywohosting/public_html/
+
+# Deploy command
+deploy:
+    ssh vps_test "cd $(APP_DIR) && git clone https://github.com/dangphuong3110/AdminDemo.git"
+    ssh vps_test "cd $(APP_DIR) && composer install"
+    ssh vps_test 'cd $(APP_DIR) && npm i'
+
+# Build command
+build:
+    ssh vps_test 'cd $(APP_DIR) && php artisan migrate --force'
+    ssh vps_test 'cd $(APP_DIR) && php artisan cache:clear'
+    ssh vps_test 'cd $(APP_DIR) && php artisan config:cache'

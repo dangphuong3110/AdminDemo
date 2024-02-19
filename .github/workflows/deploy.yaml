@@ -1,0 +1,34 @@
+name: Deploy to cPanel
+
+on:
+  push:
+    branches:
+      - master # Adjust to match your branch name
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: master
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Copy repository contents via scp
+        uses: appleboy/scp-action@master
+        with:
+          source: "."
+          target: "/home/rqdxsywohosting/public_html"
+          debug: true
+          host: "${{ secrets.HOST }}"
+          username: "${{ secrets.USERNAME }}"
+          port: "${{ secrets.PORT }}"
+          key: "${{ secrets.SSH_PRIVATE_KEY }}"
+      
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: "${{ secrets.HOST }}"
+          username: "${{ secrets.USERNAME }}"
+          port: "${{ secrets.PORT }}"
+          key: "${{ secrets.SSH_PRIVATE_KEY }}"
+          script: "cd /home/rqdxsywohosting/public_html && sh deploy.sh"
